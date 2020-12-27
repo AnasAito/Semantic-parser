@@ -46,12 +46,12 @@
 > script version
 
 - run `python app.py` will run a local server on your machine
-- go to `'http://127.0.0.1:5000/parse?paper_id=/paper/Generative-Adversarial-Nets-Goodfellow-Pouget-Abadie/54e325aee6b2d476bbbb88615ac15e251c6e8214'` for example will return a json file containg all the info about this paper :
+- go to `'http://127.0.0.1:5000/parse?paper_id=/paper/Generative-Adversarial-Nets-Goodfellow-Pouget-Abadie/54e325aee6b2d476bbbb88615ac15e251c6e8214'` for example will return a json file containg all the info about [this paper] (https://www.semanticscholar.org/paper/Generative-Adversarial-Networks-Goodfellow-Pouget-Abadie/5e9ed7e980634562a329e85ad225d23ea77f3d1f)
 - for any paper just go to `'http://127.0.0.1:5000/parse?paper_id=[<paper_id>]'`
 
 > notebook version
 
-- open `S2 scrapper.ipynb` there you will find some code example to play with the scrapper and some ideas how to use it .
+- open [`S2 scrapper.ipynb`](https://github.com/AnasAito/Semantic-parser/blob/main/S2%20scrapper.ipynb) there you will find some code example to play with the scrapper and some ideas how to use it .
 
 ## Contribution
 
