@@ -1,13 +1,17 @@
-# Shemantic-parser
+# Semantic-parser
+
 ## Overview : 
-- a set of functions that help you parse [shemantic scholar](https://www.semanticscholar.org/paper/DAG-GNN%3A-DAG-Structure-Learning-with-Graph-Neural-Yu-Chen/1d6b8803f6f6b188802275210eb5d7839644a8b5) paper page content  . 
-- given a paper id the main function will return a json file of all the important infromations about the paper 
-- this will be the base for our api for the [shemantic-vis app](https://github.com/AnasAito/Shemantic-vis##) 
+
+- The code is a set of functions that help you parse [semantic scholar](https://www.semanticscholar.org/paper/DAG-GNN%3A-DAG-Structure-Learning-with-Graph-Neural-Yu-Chen/1d6b8803f6f6b188802275210eb5d7839644a8b5) paper page content. 
+Given a paper's id, the main function will return a .json file of all the important information about the paper. This will also serve as the base for the [semantic-vis app's API](https://github.com/AnasAito/Shemantic-vis##).
+
 ## Motivation  :
->  Why making this parser if an api for shemantic scholar already exist ? 
-- Yes an api exist but the data that offer is shallow ( abstract , title , citations and refs ) 
-but no topics or sorting of citations niether the refernces
-- our parser load the paper page and parse all the data about the citations or the paper , plus you can make some sorting on the citation list and also the ref one 
+
+>  A semantic scholar's API already exists, then why make this parser? 
+- The Data offered by the existant API is shallow (abstract , title , citations and refs ), it lacks many information such as topics, sorting of citations and refrences and more...
+> So how does this work? 
+- This tool loads the paper page and then parse all the data about the citations or the paper. Also, you can make some sorting on the citation list and the reference's
+
 ## Response Format : 
 ```yaml
 { 
