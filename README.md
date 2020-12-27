@@ -13,8 +13,9 @@ Given a paper's id, the main function will return a .json file of all the import
 - This tool loads the paper page and then parse all the data about the citations or the paper. Also, you can make some sorting on the citation list and the reference's
 
 ## Response Format : 
+
 ```yaml
-{ 
+{
  'title': 'Generative Adversarial Nets',
  'corpus_id': 'Corpus ID: 1033682',
  'additional_data': 'Published in NIPS 2014',
@@ -30,7 +31,7 @@ Given a paper's id, the main function will return a .json file of all the import
    'stats': ['40', 'Highly Influenced', 'PDF']}
    ,...]},
  'references': [
- { 
+ {
    'title': 'Deep Generative Stochastic Networks Trainable by Backprop',
    'link': '/paper/Deep-Generative-Stochastic-Networks-Trainable-by-Bengio-Thibodeau-Laufer/5ffa8bf1bf3e39227be28de4ff6915d3b21eb52d',
    'stats': ['313', 'PDF']
@@ -38,3 +39,19 @@ Given a paper's id, the main function will return a .json file of all the import
   }
 ```
 
+## Getting started
+
+> script version
+
+- run `python app.py` will run a local server on your machine
+- go to `'http://127.0.0.1:5000/parse?paper_id=/paper/Generative-Adversarial-Nets-Goodfellow-Pouget-Abadie/54e325aee6b2d476bbbb88615ac15e251c6e8214'` for example will return a json file containg all the info about [this paper](https://www.semanticscholar.org/paper/Generative-Adversarial-Networks-Goodfellow-Pouget-Abadie/5e9ed7e980634562a329e85ad225d23ea77f3d1f)
+- for any paper just go to `'http://127.0.0.1:5000/parse?paper_id=[<paper_id>]'`
+
+> notebook version
+
+- open [`S2 scrapper.ipynb`](https://github.com/AnasAito/Semantic-parser/blob/main/S2%20scrapper.ipynb) there you will find some code example to play with the scrapper and some ideas how to use it .
+
+## Contribution
+
+- Please feel free to contribute to the parser or just suggest additional field to be scrapped !
+- or just share with us your use cases .
