@@ -1,3 +1,5 @@
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+import matplotlib.pyplot as plt
 def ravel(list_): return [j for sub in list_ for j in sub]
 
 
