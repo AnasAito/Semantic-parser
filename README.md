@@ -51,7 +51,15 @@ Given a paper's id, the main function will return a .json file of all the import
 
 - open [`S2 scrapper.ipynb`](https://github.com/AnasAito/Semantic-parser/blob/main/S2%20scrapper.ipynb) there you will find some code example to play with the scrapper and some ideas how to use it .
 
+
+
 ## Contribution
 
 - Please feel free to contribute to the parser or just suggest additional field to be scrapped !
 - or just share with us your use cases .
+
+## Todos 
+### Paper topics graph analysis
+- [ ] debug paper _see sandbox notebook (31/12/20)
+- [ ] add title words to topic list _catboost example (31/12/20)
+- [ ] start secton 2 _merge paper graphs (31/12/20)
