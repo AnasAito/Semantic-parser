@@ -1,0 +1,108 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1>plant 3->4</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 750px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "blue", "id": "cod", "label": "cod", "shape": "dot", "size": 10}, {"color": "red", "id": "nutrient", "label": "nutrient", "shape": "dot", "size": 10}, {"color": "blue", "id": "aquatic", "label": "aquatic", "shape": "dot", "size": 10}, {"color": "blue", "id": "gibba", "label": "gibba", "shape": "dot", "size": 10}, {"color": "red", "id": "fluorescence", "label": "fluorescence", "shape": "dot", "size": 10}, {"color": "red", "id": "plant", "label": "plant", "shape": "dot", "size": 10}, {"color": "blue", "id": "lemna", "label": "lemna", "shape": "dot", "size": 10}, {"color": "blue", "id": "chlorophyll", "label": "chlorophyll", "shape": "dot", "size": 10}, {"color": "red", "id": "photosynthetic", "label": "photosynthetic", "shape": "dot", "size": 10}, {"color": "red", "id": "extracellular", "label": "extracellular", "shape": "dot", "size": 10}, {"color": "red", "id": "vesicle", "label": "vesicle", "shape": "dot", "size": 10}, {"color": "red", "id": "rna", "label": "rna", "shape": "dot", "size": 10}, {"color": "red", "id": "stress", "label": "stress", "shape": "dot", "size": 10}, {"color": "blue", "id": "biological", "label": "biological", "shape": "dot", "size": 10}, {"color": "blue", "id": "cowpea", "label": "cowpea", "shape": "dot", "size": 10}, {"color": "blue", "id": "potential", "label": "potential", "shape": "dot", "size": 10}, {"color": "blue", "id": "nacl", "label": "nacl", "shape": "dot", "size": 10}, {"color": "red", "id": "salt", "label": "salt", "shape": "dot", "size": 10}, {"color": "red", "id": "chickpea", "label": "chickpea", "shape": "dot", "size": 10}, {"color": "blue", "id": "polyphasic", "label": "polyphasic", "shape": "dot", "size": 10}, {"color": "red", "id": "root", "label": "root", "shape": "dot", "size": 10}, {"color": "red", "id": "photosystem", "label": "photosystem", "shape": "dot", "size": 10}, {"color": "blue", "id": "fixation", "label": "fixation", "shape": "dot", "size": 10}, {"color": "blue", "id": "legume", "label": "legume", "shape": "dot", "size": 10}, {"color": "red", "id": "insecticide", "label": "insecticide", "shape": "dot", "size": 10}, {"color": "red", "id": "nematicidal", "label": "nematicidal", "shape": "dot", "size": 10}, {"color": "blue", "id": "species", "label": "species", "shape": "dot", "size": 10}, {"color": "blue", "id": "ziziphu", "label": "ziziphu", "shape": "dot", "size": 10}, {"color": "blue", "id": "carbohydrate", "label": "carbohydrate", "shape": "dot", "size": 10}, {"color": "blue", "id": "wetland", "label": "wetland", "shape": "dot", "size": 10}, {"color": "blue", "id": "sand", "label": "sand", "shape": "dot", "size": 10}, {"color": "blue", "id": "filter", "label": "filter", "shape": "dot", "size": 10}, {"color": "blue", "id": "transmission", "label": "transmission", "shape": "dot", "size": 10}, {"color": "red", "id": "leaf", "label": "leaf", "shape": "dot", "size": 10}, {"color": "red", "id": "lipopeptide", "label": "lipopeptide", "shape": "dot", "size": 10}, {"color": "red", "id": "oils", "label": "oils", "shape": "dot", "size": 10}, {"color": "red", "id": "antifungal", "label": "antifungal", "shape": "dot", "size": 10}, {"color": "blue", "id": "photoprotection", "label": "photoprotection", "shape": "dot", "size": 10}, {"color": "blue", "id": "ii", "label": "ii", "shape": "dot", "size": 10}, {"color": "blue", "id": "desiccate", "label": "desiccate", "shape": "dot", "size": 10}, {"color": "blue", "id": "variety", "label": "variety", "shape": "dot", "size": 10}, {"color": "blue", "id": "growthpromote", "label": "growthpromote", "shape": "dot", "size": 10}, {"color": "blue", "id": "dampingoff", "label": "dampingoff", "shape": "dot", "size": 10}, {"color": "red", "id": "uptake", "label": "uptake", "shape": "dot", "size": 10}, {"color": "blue", "id": "airdrye", "label": "airdrye", "shape": "dot", "size": 10}, {"color": "blue", "id": "response", "label": "response", "shape": "dot", "size": 10}, {"color": "blue", "id": "factor", "label": "factor", "shape": "dot", "size": 10}, {"color": "blue", "id": "transient", "label": "transient", "shape": "dot", "size": 10}, {"color": "blue", "id": "antagonist", "label": "antagonist", "shape": "dot", "size": 10}, {"color": "blue", "id": "antiangiogenic", "label": "antiangiogenic", "shape": "dot", "size": 10}, {"color": "blue", "id": "receptor", "label": "receptor", "shape": "dot", "size": 10}, {"color": "blue", "id": "growth", "label": "growth", "shape": "dot", "size": 10}, {"color": "blue", "id": "cytokine", "label": "cytokine", "shape": "dot", "size": 10}, {"color": "blue", "id": "tumour", "label": "tumour", "shape": "dot", "size": 10}, {"color": "red", "id": "juncu", "label": "juncu", "shape": "dot", "size": 10}, {"color": "blue", "id": "fruits", "label": "fruits", "shape": "dot", "size": 10}, {"color": "blue", "id": "flavonoid", "label": "flavonoid", "shape": "dot", "size": 10}, {"color": "blue", "id": "exposure", "label": "exposure", "shape": "dot", "size": 10}, {"color": "red", "id": "euteiche", "label": "euteiche", "shape": "dot", "size": 10}, {"color": "red", "id": "pathogen", "label": "pathogen", "shape": "dot", "size": 10}, {"color": "red", "id": "fungal", "label": "fungal", "shape": "dot", "size": 10}, {"color": "red", "id": "essential", "label": "essential", "shape": "dot", "size": 10}, {"color": "blue", "id": "light", "label": "light", "shape": "dot", "size": 10}, {"color": "blue", "id": "cainito", "label": "cainito", "shape": "dot", "size": 10}, {"color": "blue", "id": "extract", "label": "extract", "shape": "dot", "size": 10}, {"color": "red", "id": "genotype", "label": "genotype", "shape": "dot", "size": 10}, {"color": "blue", "id": "efficiency", "label": "efficiency", "shape": "dot", "size": 10}, {"color": "blue", "id": "toxic", "label": "toxic", "shape": "dot", "size": 10}, {"color": "red", "id": "redox", "label": "redox", "shape": "dot", "size": 10}, {"color": "red", "id": "interaction", "label": "interaction", "shape": "dot", "size": 10}, {"color": "red", "id": "aphanomyce", "label": "aphanomyce", "shape": "dot", "size": 10}, {"color": "red", "id": "tolerance", "label": "tolerance", "shape": "dot", "size": 10}, {"color": "red", "id": "plantfungi", "label": "plantfungi", "shape": "dot", "size": 10}, {"color": "blue", "id": "biomass", "label": "biomass", "shape": "dot", "size": 10}, {"color": "blue", "id": "16s", "label": "16s", "shape": "dot", "size": 10}]);
+        edges = new vis.DataSet([{"color": "blue", "from": "cod", "to": "nutrient", "weight": 1}, {"color": "blue", "from": "cod", "to": "aquatic", "weight": 1}, {"color": "blue", "from": "gibba", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "gibba", "to": "plant", "weight": 1}, {"color": "blue", "from": "gibba", "to": "lemna", "weight": 1}, {"color": "blue", "from": "gibba", "to": "chlorophyll", "weight": 1}, {"color": "blue", "from": "gibba", "to": "photosynthetic", "weight": 1}, {"color": "red", "from": "extracellular", "to": "plant", "weight": 1}, {"color": "red", "from": "extracellular", "to": "vesicle", "weight": 1}, {"color": "red", "from": "extracellular", "to": "rna", "weight": 1}, {"color": "red", "from": "stress", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "stress", "to": "biological", "weight": 1}, {"color": "blue", "from": "stress", "to": "cowpea", "weight": 1}, {"color": "blue", "from": "stress", "to": "potential", "weight": 1}, {"color": "blue", "from": "stress", "to": "nacl", "weight": 1}, {"color": "blue", "from": "stress", "to": "salt", "weight": 1}, {"color": "blue", "from": "stress", "to": "chickpea", "weight": 1}, {"color": "blue", "from": "stress", "to": "polyphasic", "weight": 1}, {"color": "red", "from": "stress", "to": "photosynthetic", "weight": 1}, {"color": "red", "from": "stress", "to": "root", "weight": 1}, {"color": "red", "from": "stress", "to": "photosystem", "weight": 1}, {"color": "red", "from": "stress", "to": "nutrient", "weight": 1}, {"color": "blue", "from": "fixation", "to": "legume", "weight": 1}, {"color": "blue", "from": "fixation", "to": "plant", "weight": 1}, {"color": "blue", "from": "fixation", "to": "potential", "weight": 1}, {"color": "red", "from": "insecticide", "to": "nematicidal", "weight": 1}, {"color": "blue", "from": "species", "to": "ziziphu", "weight": 1}, {"color": "blue", "from": "species", "to": "carbohydrate", "weight": 1}, {"color": "blue", "from": "wetland", "to": "sand", "weight": 1}, {"color": "blue", "from": "wetland", "to": "filter", "weight": 1}, {"color": "blue", "from": "transmission", "to": "nacl", "weight": 1}, {"color": "blue", "from": "transmission", "to": "leaf", "weight": 1}, {"color": "blue", "from": "transmission", "to": "salt", "weight": 1}, {"color": "blue", "from": "transmission", "to": "chickpea", "weight": 1}, {"color": "blue", "from": "lemna", "to": "plant", "weight": 1}, {"color": "blue", "from": "potential", "to": "biological", "weight": 1}, {"color": "blue", "from": "potential", "to": "cowpea", "weight": 1}, {"color": "blue", "from": "potential", "to": "legume", "weight": 1}, {"color": "red", "from": "salt", "to": "leaf", "weight": 1}, {"color": "red", "from": "salt", "to": "chickpea", "weight": 1}, {"color": "red", "from": "lipopeptide", "to": "oils", "weight": 1}, {"color": "red", "from": "lipopeptide", "to": "antifungal", "weight": 1}, {"color": "blue", "from": "photosystem", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "photosystem", "to": "photoprotection", "weight": 1}, {"color": "blue", "from": "photosystem", "to": "ii", "weight": 1}, {"color": "blue", "from": "photosystem", "to": "desiccate", "weight": 1}, {"color": "red", "from": "photosystem", "to": "root", "weight": 1}, {"color": "red", "from": "photosystem", "to": "nutrient", "weight": 1}, {"color": "blue", "from": "cowpea", "to": "variety", "weight": 1}, {"color": "blue", "from": "cowpea", "to": "legume", "weight": 1}, {"color": "blue", "from": "cowpea", "to": "plant", "weight": 1}, {"color": "blue", "from": "growthpromote", "to": "plant", "weight": 1}, {"color": "blue", "from": "dampingoff", "to": "plant", "weight": 1}, {"color": "blue", "from": "nutrient", "to": "plant", "weight": 1}, {"color": "blue", "from": "nutrient", "to": "filter", "weight": 1}, {"color": "red", "from": "nutrient", "to": "root", "weight": 1}, {"color": "red", "from": "nutrient", "to": "uptake", "weight": 1}, {"color": "blue", "from": "airdrye", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "airdrye", "to": "chlorophyll", "weight": 1}, {"color": "blue", "from": "response", "to": "factor", "weight": 1}, {"color": "blue", "from": "transient", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "antagonist", "to": "antiangiogenic", "weight": 1}, {"color": "blue", "from": "receptor", "to": "growth", "weight": 1}, {"color": "blue", "from": "receptor", "to": "cytokine", "weight": 1}, {"color": "blue", "from": "antiangiogenic", "to": "tumour", "weight": 1}, {"color": "blue", "from": "antiangiogenic", "to": "growth", "weight": 1}, {"color": "blue", "from": "desiccate", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "desiccate", "to": "photoprotection", "weight": 1}, {"color": "red", "from": "juncu", "to": "plant", "weight": 1}, {"color": "blue", "from": "ziziphu", "to": "plant", "weight": 1}, {"color": "blue", "from": "ziziphu", "to": "fruits", "weight": 1}, {"color": "blue", "from": "ziziphu", "to": "carbohydrate", "weight": 1}, {"color": "blue", "from": "ziziphu", "to": "flavonoid", "weight": 1}, {"color": "blue", "from": "plant", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "plant", "to": "biological", "weight": 1}, {"color": "blue", "from": "plant", "to": "legume", "weight": 1}, {"color": "blue", "from": "plant", "to": "chlorophyll", "weight": 1}, {"color": "blue", "from": "plant", "to": "ii", "weight": 1}, {"color": "blue", "from": "plant", "to": "exposure", "weight": 1}, {"color": "blue", "from": "plant", "to": "euteiche", "weight": 1}, {"color": "blue", "from": "plant", "to": "fruits", "weight": 1}, {"color": "blue", "from": "plant", "to": "carbohydrate", "weight": 1}, {"color": "blue", "from": "plant", "to": "flavonoid", "weight": 1}, {"color": "blue", "from": "plant", "to": "aquatic", "weight": 1}, {"color": "red", "from": "plant", "to": "pathogen", "weight": 1}, {"color": "red", "from": "plant", "to": "vesicle", "weight": 1}, {"color": "red", "from": "plant", "to": "fungal", "weight": 1}, {"color": "red", "from": "essential", "to": "oils", "weight": 1}, {"color": "blue", "from": "light", "to": "photoprotection", "weight": 1}, {"color": "blue", "from": "aquatic", "to": "filter", "weight": 1}, {"color": "blue", "from": "cainito", "to": "extract", "weight": 1}, {"color": "blue", "from": "exposure", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "exposure", "to": "chlorophyll", "weight": 1}, {"color": "blue", "from": "exposure", "to": "photosynthetic", "weight": 1}, {"color": "blue", "from": "sand", "to": "filter", "weight": 1}, {"color": "blue", "from": "biological", "to": "variety", "weight": 1}, {"color": "blue", "from": "biological", "to": "legume", "weight": 1}, {"color": "red", "from": "genotype", "to": "photosynthetic", "weight": 1}, {"color": "blue", "from": "ii", "to": "fluorescence", "weight": 1}, {"color": "blue", "from": "ii", "to": "chlorophyll", "weight": 1}, {"color": "blue", "from": "ii", "to": "photosynthetic", "weight": 1}, {"color": "blue", "from": "nacl", "to": "leaf", "weight": 1}, {"color": "blue", "from": "nacl", "to": "chickpea", "weight": 1}, {"color": "blue", "from": "nacl", "to": "polyphasic", "weight": 1}, {"color": "blue", "from": "leaf", "to": "chickpea", "weight": 1}, {"color": "blue", "from": "leaf", "to": "polyphasic", "weight": 1}, {"color": "blue", "from": "efficiency", "to": "toxic", "weight": 1}, {"color": "blue", "from": "growth", "to": "tumour", "weight": 1}, {"color": "blue", "from": "fluorescence", "to": "photoprotection", "weight": 1}, {"color": "blue", "from": "fluorescence", "to": "chlorophyll", "weight": 1}, {"color": "red", "from": "fluorescence", "to": "photosynthetic", "weight": 1}, {"color": "red", "from": "fluorescence", "to": "redox", "weight": 1}, {"color": "red", "from": "pathogen", "to": "interaction", "weight": 1}, {"color": "red", "from": "euteiche", "to": "aphanomyce", "weight": 1}, {"color": "red", "from": "redox", "to": "photosynthetic", "weight": 1}, {"color": "red", "from": "nematicidal", "to": "antifungal", "weight": 1}, {"color": "blue", "from": "toxic", "to": "photosynthetic", "weight": 1}, {"color": "blue", "from": "chickpea", "to": "polyphasic", "weight": 1}, {"color": "blue", "from": "chlorophyll", "to": "photosynthetic", "weight": 1}, {"color": "red", "from": "antifungal", "to": "oils", "weight": 1}, {"color": "blue", "from": "fruits", "to": "carbohydrate", "weight": 1}, {"color": "blue", "from": "fruits", "to": "flavonoid", "weight": 1}, {"color": "blue", "from": "flavonoid", "to": "carbohydrate", "weight": 1}, {"color": "red", "from": "tolerance", "to": "photosynthetic", "weight": 1}, {"color": "red", "from": "interaction", "to": "plantfungi", "weight": 1}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

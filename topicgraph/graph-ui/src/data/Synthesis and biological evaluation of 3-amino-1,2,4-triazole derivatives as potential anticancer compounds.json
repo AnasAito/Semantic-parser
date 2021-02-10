@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "cancer"}, {"id": "anticancer"}, {"id": "series"}], "links": [{"weight": 0.4, "source": "cancer", "target": "anticancer"}, {"weight": 0.2857142857142857, "source": "cancer", "target": "series"}, {"weight": 0.5, "source": "anticancer", "target": "series"}]}

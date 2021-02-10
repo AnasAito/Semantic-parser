@@ -1,0 +1,108 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1>plant 3->4</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 750px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"group": "3", "id": "extracellular", "label": "extracellular", "shape": "dot", "size": 10}, {"group": "3", "id": "plant", "label": "plant", "shape": "dot", "size": 10}, {"group": "3", "id": "rna", "label": "rna", "shape": "dot", "size": 10}, {"group": "3", "id": "vesicle", "label": "vesicle", "shape": "dot", "size": 10}, {"group": "3", "id": "juncu", "label": "juncu", "shape": "dot", "size": 10}, {"group": "5", "id": "pathogen", "label": "pathogen", "shape": "dot", "size": 10}, {"group": "3", "id": "fungal", "label": "fungal", "shape": "dot", "size": 10}, {"group": "6", "id": "stress", "label": "stress", "shape": "dot", "size": 10}, {"group": "6", "id": "root", "label": "root", "shape": "dot", "size": 10}, {"group": "6", "id": "nutrient", "label": "nutrient", "shape": "dot", "size": 10}, {"group": "6", "id": "photosystem", "label": "photosystem", "shape": "dot", "size": 10}, {"group": "4", "id": "fluorescence", "label": "fluorescence", "shape": "dot", "size": 10}, {"group": "4", "id": "photosynthetic", "label": "photosynthetic", "shape": "dot", "size": 10}, {"group": "6", "id": "uptake", "label": "uptake", "shape": "dot", "size": 10}, {"group": "0", "id": "nematicidal", "label": "nematicidal", "shape": "dot", "size": 10}, {"group": "0", "id": "antifungal", "label": "antifungal", "shape": "dot", "size": 10}, {"group": "0", "id": "insecticide", "label": "insecticide", "shape": "dot", "size": 10}, {"group": "0", "id": "lipopeptide", "label": "lipopeptide", "shape": "dot", "size": 10}, {"group": "0", "id": "oils", "label": "oils", "shape": "dot", "size": 10}, {"group": "4", "id": "redox", "label": "redox", "shape": "dot", "size": 10}, {"group": "4", "id": "tolerance", "label": "tolerance", "shape": "dot", "size": 10}, {"group": "4", "id": "genotype", "label": "genotype", "shape": "dot", "size": 10}, {"group": "1", "id": "euteiche", "label": "euteiche", "shape": "dot", "size": 10}, {"group": "1", "id": "aphanomyce", "label": "aphanomyce", "shape": "dot", "size": 10}, {"group": "5", "id": "interaction", "label": "interaction", "shape": "dot", "size": 10}, {"group": "2", "id": "salt", "label": "salt", "shape": "dot", "size": 10}, {"group": "2", "id": "leaf", "label": "leaf", "shape": "dot", "size": 10}, {"group": "2", "id": "chickpea", "label": "chickpea", "shape": "dot", "size": 10}, {"group": "0", "id": "essential", "label": "essential", "shape": "dot", "size": 10}, {"group": "5", "id": "plantfungi", "label": "plantfungi", "shape": "dot", "size": 10}]);
+        edges = new vis.DataSet([{"from": "extracellular", "new": 1, "to": "plant", "weight": 0.5}, {"from": "extracellular", "new": 1, "to": "rna", "weight": 1.0}, {"from": "extracellular", "new": 1, "to": "vesicle", "weight": 1.0}, {"from": "plant", "new": 1, "to": "juncu", "weight": 2.0}, {"from": "plant", "new": 1, "to": "pathogen", "weight": 1.0}, {"from": "plant", "new": 1, "to": "fungal", "weight": 1.0}, {"from": "plant", "new": 1, "to": "vesicle", "weight": 0.5}, {"from": "stress", "new": 1, "to": "root", "weight": 0.2857142857142857}, {"from": "stress", "new": 1, "to": "nutrient", "weight": 0.2857142857142857}, {"from": "stress", "new": 1, "to": "photosystem", "weight": 0.5454545454545455}, {"from": "stress", "new": 1, "to": "fluorescence", "weight": 0.2222222222222222}, {"from": "stress", "new": 1, "to": "photosynthetic", "weight": 0.1111111111111111}, {"from": "root", "new": 1, "to": "nutrient", "weight": 0.4}, {"from": "root", "new": 1, "to": "photosystem", "weight": 0.23076923076923078}, {"from": "nutrient", "new": 1, "to": "uptake", "weight": 1.0}, {"from": "nutrient", "new": 1, "to": "photosystem", "weight": 0.2857142857142857}, {"from": "nematicidal", "new": 1, "to": "antifungal", "weight": 1.0}, {"from": "nematicidal", "new": 1, "to": "insecticide", "weight": 1.0}, {"from": "antifungal", "new": 1, "to": "lipopeptide", "weight": 0.2222222222222222}, {"from": "antifungal", "new": 1, "to": "oils", "weight": 0.2}, {"from": "fluorescence", "new": 1, "to": "redox", "weight": 0.4444444444444444}, {"from": "fluorescence", "new": 0, "to": "photosynthetic", "weight": 0.16000000000000003}, {"from": "redox", "new": 1, "to": "photosynthetic", "weight": 0.125}, {"from": "photosynthetic", "new": 1, "to": "tolerance", "weight": 0.3333333333333333}, {"from": "photosynthetic", "new": 1, "to": "genotype", "weight": 0.18181818181818182}, {"from": "euteiche", "new": 1, "to": "aphanomyce", "weight": 1.0}, {"from": "pathogen", "new": 1, "to": "interaction", "weight": 0.16666666666666666}, {"from": "salt", "new": 1, "to": "leaf", "weight": 0.18181818181818182}, {"from": "salt", "new": 1, "to": "chickpea", "weight": 0.25}, {"from": "essential", "new": 1, "to": "oils", "weight": 3.0}, {"from": "oils", "new": 1, "to": "lipopeptide", "weight": 1.0}, {"from": "interaction", "new": 1, "to": "plantfungi", "weight": 0.5}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

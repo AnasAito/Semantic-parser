@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "oxygen"}, {"id": "oxide"}, {"id": "nanoparticle"}], "links": [{"weight": 0.2, "source": "oxygen", "target": "oxide"}, {"weight": 0.10526315789473684, "source": "oxygen", "target": "nanoparticle"}, {"weight": 0.15384615384615385, "source": "oxide", "target": "nanoparticle"}]}

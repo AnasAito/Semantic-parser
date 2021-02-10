@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "stability"}, {"id": "perovskite"}, {"id": "oxide"}], "links": [{"weight": 0.3, "source": "stability", "target": "perovskite"}, {"weight": 0.18749999999999997, "source": "stability", "target": "oxide"}, {"weight": 0.25, "source": "perovskite", "target": "oxide"}]}

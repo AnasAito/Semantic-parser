@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Canva from "./components/canva";
 import Dir from "./components/dir";
-
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
 const dirs = require("./data/index.json");
 export default function App() {
-  const [graph, setGraph] = useState(dirs.graphs[0]);
+  const [graph, setGraph] = useState(dirs.graphs[dirs.graphs.length - 1]);
   const [on, setOn] = useState(false);
   return (
     <div className="  flex  flex-col ">
@@ -13,7 +15,7 @@ export default function App() {
           <Dir
             setGraph={setGraph}
             itemOnClick={(item) => setGraph(item)}
-            items={dirs.graphs}
+            items={dirs.graphs.filter(onlyUnique)}
             graph={graph}
           />
         </div>

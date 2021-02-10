@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "extract"}, {"id": "biostimulant"}, {"id": "chlorophyll"}], "links": [{"weight": 0.4, "source": "extract", "target": "biostimulant"}, {"weight": 0.3333333333333333, "source": "extract", "target": "chlorophyll"}]}

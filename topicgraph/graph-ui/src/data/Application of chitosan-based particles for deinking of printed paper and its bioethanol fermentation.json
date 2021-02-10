@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "ethanol"}, {"id": "adsorption"}, {"id": "deink"}], "links": [{"weight": 0.10526315789473684, "source": "ethanol", "target": "adsorption"}, {"weight": 0.3333333333333333, "source": "ethanol", "target": "deink"}, {"weight": 0.10526315789473684, "source": "adsorption", "target": "deink"}]}

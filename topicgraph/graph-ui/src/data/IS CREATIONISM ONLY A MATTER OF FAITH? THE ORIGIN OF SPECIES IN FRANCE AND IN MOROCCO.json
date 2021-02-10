@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "religion"}, {"id": "faith"}, {"id": "creation"}, {"id": "darwin"}], "links": [{"weight": 0.5, "source": "religion", "target": "faith"}, {"weight": 0.5, "source": "faith", "target": "creation"}, {"weight": 1.0, "source": "creation", "target": "darwin"}]}

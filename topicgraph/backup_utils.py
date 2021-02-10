@@ -15,7 +15,7 @@ from tqdm import tqdm
 from networkx.algorithms import community
 import matplotlib.pyplot as plt
 import plotly.express as px
-from itertools import combinations 
+
 
 from random import random
 
@@ -31,10 +31,11 @@ def get_shemantic_paper_html(where):
     '''
     
     base_url = 'https://www.semanticscholar.org'
-    filter_ = '?citationRankingModelVersion=v0.2.0-0.01&citedPapersSort=relevance&citedPapersLimit=10&citedPapersOffset=0&sort=is-influential'
+    filter_ = '?citationRankingModelVersion=v0.2.0-0.01&citedPapersSort=relevance&citedPapersLimit=10&citedPapersOffset=0&sort=relevance'
     URL = base_url+where+filter_
+    headers = {'User-Agent': 'Mozilla/5.0'}
     
-    page = requests.get(URL)
+    page = requests.get(URL, headers=headers)
     soup = BeautifulSoup(page.content, 'html.parser')
     
     return soup 
@@ -67,49 +68,63 @@ def extract_data(soup):
         data['citations_overview'] ={}
 
     ## paper topics 
-    is_topics = (soup.find_all('h4',{'class':'card-sidebar__title'}) is not []) |(soup.find_all('h4',{'class':'card-footer__title'}) is not []) 
-
+    topic_section = soup.find('div',{'data-selenium-selector':'entities-list'})
+    is_topics = topic_section is not None
+    
     if is_topics : 
-        
-        data['topics'] = [span.text for span in soup.find_all('span',{'class' :'preview-box__target' })]
-    else : data['topics'] = []
+        data['topics'] = [span.text for span in topic_section.find_all('span',{'class' :'preview-box__target' })]
+    else : 
+        data['topics'] = []
     
     ## main citations , refs 
-    cards = soup.find_all('div', class_='cl-paper-row citation-list__paper-row')
-    citations_cards = cards[:10]
-    refs_cards = cards [10:]
+    citations_div = soup.find('div' , {'id':'citing-papers'})
+    refs_div = soup.find('div',{'id':'references'})
+    citations_cards=[]
+    refs_cards = []
+    if citations_div is not None : 
+         citations_cards = citations_div.find_all('div', class_='cl-paper-row citation-list__paper-row')
+  
+    if   refs_div is not None :      
+         refs_cards = refs_div.find_all('div', class_='cl-paper-row citation-list__paper-row')
 
     for cit in citations_cards : 
-        entry = {}
-        entry['title'] = cit.find('div' , class_='cl-paper-title').text
-        entry['link'] = cit.find('a')['href']
-        
-        stats_raw = cit.find('div',class_='cl-paper-controls__stats')#.find_all('div',class_='cl-paper-stat') 
-        if stats_raw :
-            stats = [div.text for div in stats_raw.find_all('div',class_='cl-paper-stat') ]
-            #print(stats)
-            entry['stats']=stats
-        else : 
-            entry['stats']=[]
+        if cit.find('a') is not None :
+            entry = {}
+            entry['title'] = cit.find('div' , class_='cl-paper-title').text
+            entry['link'] = cit.find('a')['href']
+            
+            stats_raw = cit.find('div',class_='cl-paper-controls__stats')#.find_all('div',class_='cl-paper-stat') 
+            if stats_raw :
+                stats = [div.text for div in stats_raw.find_all('div',class_='cl-paper-stat') ]
+                #print(stats)
+                entry['stats']=stats
+            else : 
+                entry['stats']=[]
 
 
         cits_list.append(entry)
+   # print(refs_cards)
     for ref in refs_cards : 
-        entry = {}
-        entry['title'] = ref.find('div' , class_='cl-paper-title').text
-        entry['link'] = ref.find('a')['href']
+        #print(ref)
+        if ref.find('a') is not None :
         
-        stats_raw = ref.find('div',class_='cl-paper-controls__stats')#.find_all('div',class_='cl-paper-stat') 
-        if stats_raw :
-            stats = [div.text for div in stats_raw.find_all('div',class_='cl-paper-stat') ]
-            #print(stats)
-            entry['stats']=stats
-        else : 
-            entry['stats']=[]
+            entry = {}
+            entry['title'] = ref.find('div' , class_='cl-paper-title').text
+            
+            entry['link'] = ref.find('a')['href']
+            
 
-
-        refs_list.append(entry)
-        
+            stats_raw = ref.find('div',class_='cl-paper-controls__stats')#.find_all('div',class_='cl-paper-stat') 
+            if stats_raw :
+                stats = [div.text for div in stats_raw.find_all('div',class_='cl-paper-stat') ]
+                #print(stats)
+                entry['stats']=stats
+            else : 
+                entry['stats']=[]
+    
+    
+            refs_list.append(entry)
+            
             
 
     data['citations'] = cits_list
@@ -267,20 +282,32 @@ def draw_final_graph(text_network,communities ,with_size=True ):
     else :  nx.draw(text_network,with_labels=True,font_size=10,node_color=color_map,edge_cmap=plt.cm.Blues)
     plt.draw()
     plt.show()
+    
+## test on root -> 2 citations - > 4 citations (7 papers)
 
 
-def get_data(paper_where):
-
+from networkx.readwrite import json_graph
+import json
+import networkx as nx
+from matplotlib import pylab as pl
+from itertools import combinations 
+def get_data(paper_where,max_leafs=2):
+        
+    base_url = 'https://www.semanticscholar.org'
+    filter_ = '?citationRankingModelVersion=v0.2.0-0.01&citedPapersSort=relevance&citedPapersLimit=10&citedPapersOffset=0&sort=total-citations'
+    print(base_url+paper_where+filter_)
     soup = get_shemantic_paper_html(paper_where)
     data = extract_data(soup)
-    print(data)
+    #print(data)
     corpus_id = ''.join(data['corpus_id'].split(' '))
     data_api = get_semantic_scholar_paper_by_api(corpus_id)
     
     abstract = data_api['abstract']
     topics = data['topics']
-    print(topics)
-    return topics , abstract 
+    title = data['title']
+    citations =  [cit['link'] for cit in data['citations'][:max_leafs]] ## get 2 citation per paper
+    #print(topics)
+    return topics,title , abstract ,citations
     
     ## get data 
     
@@ -306,12 +333,7 @@ def procees_topics(topics_raw):
     top = preprocess(topics_words)
     return top
     
-def filter_graph(full_graph,topics):
-    '''
-    process topics list then filter full graph giben topics nodes and merging edges 
-    '''
-    graph = nx.Graph()
-    return filtred_graph
+
 
 
 
@@ -344,11 +366,12 @@ def compute_edge_from_path(path,graph):
     return 1/edge_weight , (path[0],path[-1])
     
 
-def topic_graph(abstract,topics):
+def topic_graph(abstract,topics,title):
     ## main 
     edge_list = []
     text_network = create_graph(abstract)
-    
+    topics = topics + title.split(' ')
+    #print(topics)
     ## only on topic words that are in abtract (maybe we can have null edge nodes in future ...)
     topics_f = get_topic_nodes_in_full_g(topics,text_network)
     
@@ -360,10 +383,392 @@ def topic_graph(abstract,topics):
         if is_edgeable : 
     
             w,nodes = compute_edge_from_path(path,text_network)
-            edge_list.append((nodes[0], nodes[1], {"weight": w}))
+            edge_list.append((nodes[0], nodes[1], {"weight": w }))
     
     G = nx.Graph(edge_list) 
     return G
         
+
+
+def add_attributes(graph):
+    degrees_dict = nx.degree_centrality(graph) 
+    nodes_comm = create_and_assign_communities(graph)
+    ## add attr to nodes
+    for node in graph.nodes : 
+        graph.nodes[node]['degree'] = degrees_dict[node]
+       ## print(nodes_comm[node])
+        graph.nodes[node]['community'] = nodes_comm[node]
+    ## add attr to edges 
+    for edge in graph.edges:
+        w = graph[edge[0]][edge[1]]['weight']
+        graph[edge[0]][edge[1]]['distance'] = 1/w
     
+    return graph
+
+def final_graph_light(graphs_list,title):
+    all_nodes = [ ]
+    all_edges = []
+    for graph_dict in graphs_list:
+        
+        nodes = list(graph_dict['graph'].nodes)
+        edges = list(graph_dict['graph'].edges)
+        
+        
+        all_nodes = list(set(all_nodes+nodes)) 
+        all_edges = list(set(all_edges+edges)) 
+        print(len(all_edges))
+        
+    
+    final_g = nx.Graph()
+    final_g.add_edges_from(all_edges) 
+    export_graph({'title':title, 'graph':final_g})
+    
+    write_title(title)
+    return final_g
+
+
+    
+
+def final_graph_weighted(graphs_list,title):
+    all_nodes = [ ]
+    all_edges = []
+    final_g = nx.Graph()
+    
+    for graph_dict in graphs_list:
+        graph = graph_dict['graph']
+        
+        for edge in list(graph.edges):
+            
+            node_a = edge[0]
+            node_b = edge[1]
+            
+            w =graph[node_a][node_b]['weight']
+          
+           
+            if final_g.has_edge(node_a,node_b):
+                
+                final_g[node_a][node_b]['weight'] += w
+                
+            else:
+             
+                final_g.add_edge(node_a,node_b, weight = w)
+                
+    ## add degree centrality
+    final_g_w_degree = add_attributes(final_g)
+    ## write to db             
+    export_graph({'title':title, 'graph':final_g_w_degree})
+    write_title(title)
+    return final_g_w_degree 
+        
+def export_graph(graph_dict):
+    data = json_graph.node_link_data(graph_dict['graph'])
+    formated_title = graph_dict['title'].replace('/', '')
+    path = './graph-ui/src/data/'+formated_title+'.json'
+    with open(path, 'w') as outfile:
+        json.dump(data, outfile)
+    
+def write_title(title):
+    formated_title = title.replace('/', '')
+    with open('./graph-ui/src/data/index.json') as json_file:
+        data = json.load(json_file)
+       ## print(data['graphs'])
+        list_ = data['graphs']
+    with open('./graph-ui/src/data/index.json','w') as json_file:
+    
+        list_ = list_+[formated_title]    
+        json.dump({'graphs':list_}, json_file) 
+    return 'written'
+    
+def plot_graph(graph):
+    pl.figure()
+    nx.draw_networkx(graph)
+    pl.show()                
+        
+##  __main__ from root paper
+
+
+graphs_list = [ ]
+n_iter = 7
+exp_title='RL'
+print('depth = ' , 0 )
+## root paper 
+root_url = '/paper/Attention-is-All-you-Need-Vaswani-Shazeer/204e3073870fae3d05bcbc2f6a8e263d9b72e776'
+topics ,title, abstract,citations= get_data(root_url,max_leafs=1000)
+
+
+print('topics : ',topics)
+print('abstract :', abstract )
+print('citations : ', citations)
+
+graph = topic_graph(abstract,topics,title)
+graphs_list.append({'title':title,'graph':graph})
+plot_graph(graph)
+print('---------------------------------------')
+for i in range(n_iter):
+    print('depth = ' , i+1 )
+    cit_all = [] 
+    for cit_link in citations : 
+        topics_ ,title_, abstract_,citations_= get_data(cit_link,max_leafs=1000)
+        keywords = topics_+title_.split(' ')
+        computable = not (abstract_==None or keywords==[])
+        if computable :
+            print('topics : ',topics_+title_.split(' '))
+            graph = topic_graph(abstract_,topics_,title_)
+            plot_graph(graph)
+            graphs_list.append({'title':title_,'graph':graph})
+            cit_all = cit_all +citations_ 
+    citations = cit_all 
+    print('leafs count = ',len(citations))
+        
+    print('---------------------------------------')
+        
+## export graphs
+[export_graph(graphs_dic) for graphs_dic in graphs_list ]
+
+[write_title(graphs_dic['title']) for graphs_dic in graphs_list ]
+
+## final graph
+final_g = final_graph_weighted(graphs_list,exp_title+' final graph')
+        
+ ##  __main__ from db corpus
+
+
+graphs_list = [ ]
+
+exp_title='UM6P'
+path_to_db = './um6p_corpus.xls'
+data = pd.read_excel(path_to_db)
+
+for index, row in data.iterrows():
+    computable = True
+    ## get abstract
+   
+    if str(row['Abstract'])=='nan':
+        
+            computable = False
+    else : abstract_ = row['Abstract']
+    
+    ## get title
+    if str(row['Article Title'])=='nan':
+            title_ = ''
+    else : title_= row['Article Title']
+    
+    ## get topics 
+    if str(row['Author Keywords'])=='nan':
+        keys = []
+    else : keys = row['Author Keywords'].split(';')
+        
+    if str(row['Keywords Plus'])=='nan':
+        keys_p = []
+    else : keys_p = row['Keywords Plus'].split(';')   
+        
+    topics_ =  keys_p +keys
+                           
+    if topics_ == []:
+        computable = False
+    
+    if computable :   
+            print('Paper : ', title_)
+            graph = topic_graph(abstract_,topics_,'')
+            plot_graph(graph)
+            graphs_list.append({'title':title_,'graph':graph})
+
+    print('---------------------------------------')
+        
+## export graphs
+[export_graph(graphs_dic) for graphs_dic in graphs_list ]
+
+[write_title(graphs_dic['title']) for graphs_dic in graphs_list ]
+
+## final graph
+final_g = final_graph_weighted(graphs_list,exp_title+' final graph')  
+
+
+def get_connectivity(graph,node_a,node_b):
+    
+    path = nx.shortest_path(graph,source=node_a,target=node_b , weight='distance')
+    pairs_ = list(zip(path, path[1:] + path[:1]))[:-1] ## delete last couple that link terminal nodes
+    #print(pairs_)
+    weights = [graph[pair_[0]][pair_[1]]['weight'] for pair_ in pairs_]
+    #print(weights)
+    edge_weight=0
+    for w in weights : 
+        edge_weight+=1/w
+    return 1/edge_weight , path
+
+
+def get_similarity(graph,topic,topics):
+
+    conn=[]
+
+    for node in graph.nodes : 
+        if node in topics:
+            pass
+
+        else :
+        
+            try : 
+                w,path =  get_connectivity(graph,topic,node)
+                conn.append(w)
+                ##conn_index.append(node)
+            except :
+                conn.append(0)
+    return conn
+
+def get_df(graph,topics):
+    dict_values={}
+   # topics = ['plant','waste','battery','soil']
+    for topic in topics : 
+        value_list = get_similarity(graph,topic,topics)
+        normed = (np.array(value_list) - min(value_list))/(max(value_list)-min(value_list))
+        dict_values[topic] = normed
+    filtred = [node for node in graph.nodes if node not in topics]   
+    df = pd.DataFrame(data=dict_values).set_index([pd.Index(filtred)])
+    return df
+
+def get_clusters(df):
+    # Convert DataFrame to matrix
+    mat = df.values
+    # Using sklearn
+    km = KMeans(n_clusters=4)
+    km.fit(mat)
+    # Get cluster assignment labels
+    labels = km.labels_
+    # Format results as a DataFrame
+    results = pd.DataFrame([df.index,labels]).T
+    results = results.rename(columns={0: 'index',1:'cat'})
+    return results
+
+def get_graph_logs(log_dict , graphs_list,index,freq):
+    dict_ = {}
+    new_nodes=[]
+    ## get barycenter 
+    evo_graph = final_graph_weighted(graphs_list,title='test' , export = False)
+    graphs = [evo_graph.subgraph(c).copy() for c in nx.connected_components(evo_graph)]
+    bars = [nx.algorithms.distance_measures.barycenter(graph) for graph in graphs]
+    lens = [len(graph.nodes) for graph in graphs]
+    log_dict = {'bars':bars,'lens':lens}
+    dict_['barycenter'] = log_dict
+    
+    ## get new nodes added 
+    new_graphs = graphs_list[index-freq-1:index+1]
+    for graph in new_graphs : 
+        graph = graph['graph']
+        new_nodes.append(list(graph.nodes))
+    dict_['new_nodes'] = set(list(chain.from_iterable(new_nodes))) 
+    
+    ## write data 
+    print(dict_)
+    #log_dict[index] = dict_
+    return evo_graph,dict_
+    
+        
+    
+def write_logs(log_list,title_base):
+    logs_light=[]
+    for index,log in enumerate(log_list) :
+        ## write graph to log folder
+        data = json_graph.node_link_data(log['graph'])
+        formated_title =title_base+'_'+str(index)
+        path = './logs/'+formated_title+'.json'
+        with open(path, 'w') as outfile:
+            json.dump(data, outfile)
+        ## write object 
+        dict_ = log['logs']
+        dict_['title'] = formated_title
+        logs_light.append(dict_)
+    ## pickle log_light 
+
+    PIK = './logs/'+title_base+".dat"
+
+  
+    with open(PIK, "wb") as f:
+        pickle.dump(logs_light, f)
+   # with open(PIK, "rb") as f:
+    #    print pickle.load(f)
+        
+def get_evo_object(name):  
+    # give exp name to rebuild dynamic data (with class graph)
+    new_log = []
+    path = './logs/'+name+".dat"
+    with open(path, "rb") as f:
+        index_ =pickle.load(f)
+    for log in index_ : 
+        dict_ = {}
+        ## get logs 
+        dict_['logs'] = log
+        title = log['title']
+        ## get graph 
+        path = './logs/'+title+'.json'
+        with open(path) as json_file:
+            data = json.load(json_file)
+            graph = nx.node_link_graph(data)
+            dict_['graph'] = graph
+        new_log.append(dict_)
+    return new_log
+    
+# __exp__ temporal graph evolution 
+##  __main__ from db corpus
+
+
+graphs_list = [ ]
+logger = []
+log_dict = {}
+exp_title='UM6P'
+freq=20
+path_to_db = './um6p_crpus_by_time.xls'
+data = pd.read_excel(path_to_db)
+
+for index, row in data.iterrows():
+    computable = True
+    ## get abstract
+   
+    if str(row['Abstract'])=='nan':
+        
+            computable = False
+    else : abstract_ = row['Abstract']
+    
+    ## get title
+    if str(row['Article Title'])=='nan':
+            title_ = ''
+    else : title_= row['Article Title']
+    
+    ## get topics 
+    if str(row['Author Keywords'])=='nan':
+        keys = []
+    else : keys = row['Author Keywords'].split(';')
+        
+    if str(row['Keywords Plus'])=='nan':
+        keys_p = []
+    else : keys_p = row['Keywords Plus'].split(';')   
+        
+    topics_ =  keys_p +keys
+                           
+    if topics_ == []:
+        computable = False
+    
+    if computable :   
+            print('Paper : ', title_)
+            graph = topic_graph(abstract_,topics_,'')
+            plot_graph(graph)
+            graphs_list.append({'title':title_,'graph':graph})
+            
+            # compute evolution graph : 
+            if index%freq==0 or index==len(data)-1 : 
+                graph,logs  = get_graph_logs(log_dict , graphs_list,index,freq)
+                logger.append({'graph':graph,'logs':logs})   
+                
+    print('---------------------------------------')
+        
+## export graphs
+#[export_graph(graphs_dic) for graphs_dic in graphs_list ]
+
+#[write_title(graphs_dic['title']) for graphs_dic in graphs_list ]
+
+## final graph
+#final_g = final_graph_weighted(graphs_list,exp_title+' final graph')          
+    
+
+
+
     

@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "catalyst"}, {"id": "bimetallic"}, {"id": "reduction"}], "links": [{"weight": 0.2, "source": "catalyst", "target": "bimetallic"}, {"weight": 0.16666666666666666, "source": "catalyst", "target": "reduction"}, {"weight": 0.5, "source": "bimetallic", "target": "reduction"}]}

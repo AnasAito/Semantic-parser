@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": "gel"}, {"id": "solvent"}, {"id": "singlet"}, {"id": "oxygen"}], "links": [{"weight": 1.0, "source": "gel", "target": "solvent"}, {"weight": 1.0, "source": "gel", "target": "singlet"}, {"weight": 1.0, "source": "singlet", "target": "oxygen"}]}
